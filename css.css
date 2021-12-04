@@ -3,13 +3,13 @@ html, body{
     padding: 0;
 }
 .slider-container{
-    min-height: 200px;
+    min-height: 600px;
     width: 100%;
     overflow: hidden;
     position: relative;
 }
 .slider-container .slide{
-    min-height: 100%;
+    height: 100%;
     width: 100%;
     position: absolute;
     top: 0;
@@ -22,8 +22,10 @@ html, body{
     
 }
 .slider-container .slide img{
-    min-height: 100%;
+    height: 100%;
     width: 100%;
+    object-fit: cover;
+    object-position: center;
 
 }
 .slider-container .slide:first-child{
@@ -41,6 +43,8 @@ html, body{
     text-align: center;
     color: white;
      cursor: pointer;
+     font-size: 40px;
+     font-style: normal;
 
 }
 .slider-container .slide-nav.left{
