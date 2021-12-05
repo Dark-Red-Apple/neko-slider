@@ -1,7 +1,7 @@
 let slideMain = document.querySelector('.slider-container')
 let slides = document.querySelectorAll('.slider-container .slide')
 let slideNav = document.querySelectorAll('.slider-container .slide-nav')
-slideMain.style.height = slides[0].querySelector('img').offsetHeight +'px'  
+// slideMain.style.height = slides[0].querySelector('img').offsetHeight +'px'  
 let curslide = 0
 let prevSlide
 let intervId
@@ -10,32 +10,42 @@ let timeOutNavIds = []
 initNavs()
 showSlide() // start slider on load
 
+document.addEventListener('visibilitychange', function() {
+    if(document.hidden) {
+        timeOutNavIds.forEach((tiIdItem)=>clearTimeout(tiIdItem))
+        console.log('haha')
+        clearInterval(intervId)
+    }
+    else {
+        timeOutNavIds.forEach((tiIdItem)=>clearTimeout(tiIdItem))
+        clearInterval(intervId)
+        showSlide() // start slider on load
+    }
+});
+
+
 function showSlide(){    
 
     intervId = setInterval(function(){
         //Set the curent and previous slides numbers
-        setCurPrevSlides()
+        rightInit()
+        setCurPrevSlides()        
         goToRight(curslide,prevSlide)
 
-    }, 5000)
-
+    }, 6000)
 }
 
 //Go to right, default
 function goToRight(curslide, prevSlide){
 
-    // Default position of sliders are right: 200%
+    slides[prevSlide].style.visibility = "visible"
     slides[prevSlide].style.transition = "transform 1s linear"
-    slides[prevSlide].style.transform = "translate(200%)"
+    slides[prevSlide].style.transform = "translate(200%)"   
 
-    //Timer is used to help to relocate slides to starting position after the transition is complete after every move
-    timeOutId = setTimeout(function(){
-        slides[prevSlide].style.transition = "unset"
-        slides[prevSlide].style.transform = "unset"        
-    },1000)
-
+    slides[curslide].style.visibility = "visible"
     slides[curslide].style.transform = "translate(100%)"
     slides[curslide].style.transition = "transform 1s linear"
+
 
     // slideMain.style.height = slides[curslide].querySelector('img').offsetHeight +'px'       
 
@@ -44,10 +54,12 @@ function goToRight(curslide, prevSlide){
 //If you want to make this default you have to run leftInit() before showSlide() or init slides positions in css 
 // And use a similar setTimeout to positon slides into starting position after every move
 function goToLeft(curslide, prevSlide){
- 
+
+    slides[prevSlide].style.visibility = "visible"
     slides[prevSlide].style.transition = "transform 1s linear"
     slides[prevSlide].style.transform = "translate(0)"
   
+    slides[curslide].style.visibility = "visible"
     slides[curslide].style.transition = "transform 1s linear"
     slides[curslide].style.transform = "translate(100%)"
 
@@ -56,7 +68,8 @@ function goToLeft(curslide, prevSlide){
 // to position slide in the right starting position
 function leftInit(){
     slides.forEach(function(slide){
-        if(slides[curslide]!= slide) {            
+        if(slides[curslide]!= slide) {    
+            slide.style.visibility = "hidden"        
             slide.style.transition = "unset"
             slide.style.transform = "translate(200%)"
         }
@@ -66,11 +79,13 @@ function leftInit(){
 function rightInit(){
     slides.forEach(function(slide){
         if(slides[curslide]!= slide) {            
+            slide.style.visibility = "hidden"
             slide.style.transition = "unset"
-            slide.style.transform = "translate(0)"
+            slide.style.transform = "unset"
         }
     })
 }
+
 // Init Navs and add EvenListeners
 function initNavs(){
     const leftNav = slideMain.querySelector('.slide-nav.left')
@@ -93,14 +108,21 @@ function initNavs(){
         // goToRight(curslide, prevSlide) move to right
         else{
             rightInit()
+            // slides[curslide].addEventListener("transitionend", func)
             setCurPrevSlides()
             goToRight(curslide, prevSlide)
         }
 
+        
+        // function func(){
+        //     slides.forEach((slide)=>slide.removeEventListener("transitionend", func))
+        //     showSlide()  
+        // }
+
         //I have made a timeout to prevent confilicts, 
         // also remove all the timeouts stored in timeOutNavIds if one clicks more than once on the nav
         let localTimeoutId = setTimeout(function(){
-            if(timeOutNavIds.length >= 1) timeOutNavIds.forEach((tiIdItem)=>clearTimeout(tiIdItem))
+            timeOutNavIds.forEach((tiIdItem)=>clearTimeout(tiIdItem))
             showSlide()  
         },1000)    
 
@@ -128,14 +150,14 @@ function initNavs(){
             clearTimeout(timeOutId)
             leftInit()
             setCurPrevSlidesToLeft()  
- 
+        
+            //set a timeout here because 
             setTimeout(function(){
-                goToLeft(curslide, prevSlide)  
-    
+                goToLeft(curslide, prevSlide)
             })            
 
             let localTimeoutId = setTimeout(function(){   
-                if(timeOutNavIds.length >= 1) timeOutNavIds.forEach((tiIdItem)=>clearTimeout(tiIdItem)) 
+                timeOutNavIds.forEach((tiIdItem)=>clearTimeout(tiIdItem)) 
                 rightInit()
                 showSlide()                   
             },1000)    
@@ -163,5 +185,4 @@ function setCurPrevSlidesToLeft(){
         curslide = slides.length-1      
     } 
 }
-
 
