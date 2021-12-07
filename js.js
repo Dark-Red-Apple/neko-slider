@@ -94,7 +94,7 @@ function goToLeft(curslide, prevSlide){
     // console.log(5)
     slides[prevSlide].style.visibility = "visible"
     slides[prevSlide].style.transition = transformType
-    slides[prevSlide].style.transform = "translate(0)"
+    slides[prevSlide].style.transform = "unset"
   
     slides[curslide].style.visibility = "visible"
     slides[curslide].style.transition = transformType
@@ -174,7 +174,7 @@ function initNavs(){
             leftInit()
             setCurPrevSlidesToLeft()  
         
-            //set a timeout here because put a gap between lefInit and goToLeft
+            //set a timeout here because put a gap between lefInit and  or transition is trigerred
             setTimeout(function(){
                 goToLeft(curslide, prevSlide)
             })            
@@ -193,9 +193,15 @@ function initNavs(){
 }
 
 function clearTimeoutInterval(){
+    console.log(timeOutNavIds)
     timeOutNavIds.forEach((tiIdItem)=>clearTimeout(tiIdItem))
+    timeOutNavIds = []
+    console.log(intervId)
     intervId.forEach((intIdItem)=>clearInterval(intIdItem))
+    intervId = []
+    console.log(timeOutId)
     timeOutId.forEach((timIdItem)=>clearTimeout(timIdItem))
+    timeOutId = []
 }
 
 // Found this code on the stackoverflow
@@ -229,7 +235,7 @@ function IntervalTimer(callback, interval) {
     };
 
     startTime = new Date();
-    console.log(4)
+    // console.log(4)
     timerId = window.setInterval(callback, interval);
     intervId.push(timerId)
     state = 1;

@@ -27,10 +27,11 @@ html, body{
     width: 100%;
     object-fit: cover;
     object-position: center;
+    image-resolution: 300dpi;
 
 }
 .slider-container .slide:first-child{
-    display: block;
+    /* display: block; */
     transform:translate(100%)
 }
 .slider-container .slide-nav{
