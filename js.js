@@ -5,25 +5,30 @@ let slideNav = document.querySelectorAll('.slider-container .slide-nav')
 let curslide = 0
 let prevSlide
 let interv 
-const transformType = "transform 1s linear"
-const transformQuickType = "transform 0.2s linear"
+const transitionTime = 1000
+const transitionTypeRight = `right ${transitionTime}ms linear`
+const transitionTypeLeft = `left ${transitionTime}ms linear`
+const transformQuickType = "right 0.2s linear"
+const intervalTime = 5000
 let intervId = []
 let timeOutId =[]
-let timeOutNavIds = []
+
+// let timeOutNavIds = []
 initNavs()
 showSlide() // start slider on load
 
 function showSlide(){ 
     
     rightInit()
-    clearTimeoutInterval()
+    // clearTimeoutInterval()
     interv = new IntervalTimer(function() {
 
         rightInit()
         setCurPrevSlides()        
         goToRight(curslide,prevSlide)
 
-    }, 5000);
+    }, intervalTime );
+    // intervId.push(interv)
 
 }
 
@@ -33,14 +38,22 @@ function leftInit(){
     slides.forEach(function(slide){
         if(slides[curslide]!=slide) {            
             if(!(slides[curslide].getBoundingClientRect().x != 0  && slides[prevSlide] == slide)) {    
+                // console.log(slides[curslide]!=slide)
                 slide.style.visibility = "hidden"        
                 slide.style.transition = "unset"
-                slide.style.transform = "translate(200%)"
+                slide.style.left = "100%"
+                slide.style.right = "unset"
             }
         }
+        if(slides[curslide]==slide) {          
+                slide.style.visibility = "visible"        
+                slide.style.transition = transitionTypeLeft
+                slide.style.left = "0"
+                slide.style.right = "unset"
+        }
     })
-
 }
+
 // to position slide in the right starting position
 function rightInit(){
     slides.forEach(function(slide){
@@ -48,8 +61,15 @@ function rightInit(){
             if(!(slides[curslide].getBoundingClientRect().x != 0  && slides[prevSlide] == slide)) {    
                     slide.style.visibility = "hidden"
                     slide.style.transition = "unset"
-                    slide.style.transform = "unset" 
+                    slide.style.right = "100%" 
+                    slide.style.left = "unset"
             }
+        }
+        if(slides[curslide]==slide){          
+            slide.style.visibility = "visible"        
+            slide.style.transition = transitionTypeRight
+            slide.style.right = "0"
+            slide.style.left = "unset"
         }
 
     })
@@ -77,28 +97,28 @@ function setCurPrevSlidesToLeft(){
 function goToRight(curslide, prevSlide){
     // console.log(4)
     slides[prevSlide].style.visibility = "visible"
-    slides[prevSlide].style.transition = transformType
-    slides[prevSlide].style.transform = "translate(200%)"   
+    slides[prevSlide].style.transition = transitionTypeRight
+    slides[prevSlide].style.right = "-100%"   
 
     slides[curslide].style.visibility = "visible"
-    slides[curslide].style.transform = "translate(100%)"
-    slides[curslide].style.transition = transformType
+    slides[curslide].style.right = "0"
+    slides[curslide].style.transition = transitionTypeRight
 
     // slideMain.style.height = slides[curslide].querySelector('img').offsetHeight +'px'       
 
 }
 
-//If you want to make this default you have to run leftInit() before showSlide() or init slides positions in css 
+//If you want to make this default you have to run leftInit() before showSlide() 
 // And use a similar setTimeout to positon slides into starting position after every move
 function goToLeft(curslide, prevSlide){
     // console.log(5)
     slides[prevSlide].style.visibility = "visible"
-    slides[prevSlide].style.transition = transformType
-    slides[prevSlide].style.transform = "unset"
+    slides[prevSlide].style.transition = transitionTypeLeft
+    slides[prevSlide].style.left = "-100%"
   
     slides[curslide].style.visibility = "visible"
-    slides[curslide].style.transition = transformType
-    slides[curslide].style.transform = "translate(100%)"
+    slides[curslide].style.transition = transitionTypeLeft
+    slides[curslide].style.left = "0"
 
     // slideMain.style.height = slides[curslide].querySelector('img').offsetHeight +'px'      
 }
@@ -116,8 +136,8 @@ function initNavs(){
         //This is used if the slider is on the move, since default direction is to right I just make it faster
         if(slides[curslide].getBoundingClientRect().x != 0){
 
-            slides[prevSlide].style.transition = transformQuickType
-            slides[curslide].style.transition = transformQuickType
+            // slides[prevSlide].style.transition = transformQuickType
+            // slides[curslide].style.transition = transformQuickType
 
         }
 
@@ -141,11 +161,11 @@ function initNavs(){
         //I have made a timeout to prevent confilicts, 
         // also remove all the timeouts stored in timeOutNavIds if one clicks more than once on the nav
         let localTimeoutId = setTimeout(function(){
-            timeOutNavIds.forEach((tiIdItem)=>clearTimeout(tiIdItem))
+            timeOutId.forEach((tiIdItem)=>clearTimeout(tiIdItem))
             showSlide()  
-        },1000)    
+        },transitionTime)    
 
-        timeOutNavIds.push(localTimeoutId)         
+        timeOutId.push(localTimeoutId)         
     })
 
     leftNav.addEventListener('click',function(){
@@ -154,9 +174,9 @@ function initNavs(){
         // To left while on the move is more complicated since we should reverse the current direction
         // This part is a work in progess
         if(slides[curslide].getBoundingClientRect().x != 0){
-            
-            slides[prevSlide].style.transition = transformQuickType
-            slides[curslide].style.transition = transformQuickType
+            // console.log('yes')
+            // slides[prevSlide].style.transition = transformQuickType
+            // slides[curslide].style.transition = transformQuickType
             // let curslideX = 100 + (((slides[curslide].getBoundingClientRect().x)/slideMain.offsetWidth)*100)
 
             // slides[prevSlide].style.transition = "unset"
@@ -170,10 +190,9 @@ function initNavs(){
         else{
             clearTimeoutInterval()
 
-            console.log(1)
             leftInit()
             setCurPrevSlidesToLeft()  
-        
+            
             //set a timeout here because put a gap between lefInit and  or transition is trigerred
             setTimeout(function(){
                 goToLeft(curslide, prevSlide)
@@ -181,25 +200,22 @@ function initNavs(){
 
             //after transition is complete run the timer
             let localTimeoutId = setTimeout(function(){   
-                timeOutNavIds.forEach((tiIdItem)=>clearTimeout(tiIdItem)) 
+                timeOutId.forEach((tiIdItem)=>clearTimeout(tiIdItem)) 
                 rightInit()
                 showSlide()                   
-            },1000)    
+            },transitionTime)    
     
-            timeOutNavIds.push(localTimeoutId)
+            timeOutId.push(localTimeoutId)
         }      
 
     })
 }
 
 function clearTimeoutInterval(){
-    console.log(timeOutNavIds)
-    timeOutNavIds.forEach((tiIdItem)=>clearTimeout(tiIdItem))
-    timeOutNavIds = []
-    console.log(intervId)
+    // timeOutNavIds.forEach((tiIdItem)=>clearTimeout(tiIdItem))
+    // timeOutNavIds = []
     intervId.forEach((intIdItem)=>clearInterval(intIdItem))
     intervId = []
-    console.log(timeOutId)
     timeOutId.forEach((timIdItem)=>clearTimeout(timIdItem))
     timeOutId = []
 }
@@ -212,9 +228,9 @@ function IntervalTimer(callback, interval) {
     this.pause = function () {
         if (state != 1) return;
         remaining = interval - (new Date() - startTime)%interval;
-        intervId.forEach((intIdItem)=>clearInterval(intIdItem))
+        clearTimeoutInterval()
         state = 2;
-        console.log(remaining)
+        // console.log(remaining)
     };
 
     this.resume = function () {
@@ -255,7 +271,7 @@ if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and 
 }
 
 function handleVisibilityChange() {
-    clearTimeoutInterval()
+    // clearTimeoutInterval()
     if(document[hidden]) {    
         interv.pause();
     }
