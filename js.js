@@ -26,21 +26,8 @@ class NikoSlider{
         this.createNextPrevBut()
         this.slides = document.querySelector('.slider-container').querySelectorAll(`.${options.slideClass}`)
         console.log('0',this.intervId)
-        window.addEventListener('focus', this.focusListener);
-        window.addEventListener('blur', this.blurListener);  
         this.showSlide() 
        
-    }
-
-    focusListener(){
-        this.showSlide() 
-        this.tabInactive = 0
-        console.log('focux')
-    }
-    blurListener(){
-        this.clearTimeoutInterval() 
-        this.tabInactive = 1
-        console.log('blur')
     }
 
     initilize(){
@@ -126,10 +113,10 @@ class NikoSlider{
     showSlide(){
         const startTime = new Date()
         // console.log(this.intervId)
-        this.clearTimeoutInterval()
+        // this.clearTimeoutInterval()
         // this.intervId=[]
         console.log('1',this.intervId)
-        this.intervId.forEach((idIn)=>cancelAnimationFrame(idIn))
+        // this.intervId.forEach((idIn)=>cancelAnimationFrame(idIn))
         console.log('2',this.intervId)
         const hidden = this.checkBrowserHidden()
 
@@ -158,73 +145,23 @@ class NikoSlider{
             window.setTimeout(callback, 1000 / 60);
           };
         })(),
-        hidden = this.checkBrowserHidden(),
         start = new Date().getTime(),
-        handle = {},
-        deltaHidden,
-        flag = 0,
-        startHidden;
+        handle = {};
 
         let loop = () => {
             handle.value = requestAnimFrame(loop);  
+            this.intervId.push(handle.value)
             let current = new Date().getTime();
-
-            // if(!document[hidden]) {          
-            //     let delta = current - start;
-            //     flag = 0   
-            //      // Active
-             
-            //     if(deltaHidden){    
-            //         console.log('hha')  
-            //         startHidden = new Date().getTime();  
-            //         deltaHidden = current - startHidden + delta;                                
-            //         if (deltaHidden >= delay) {
-            //             console.log('visi')
-            //             fn.call();                        
-            //             deltaHidden = undefined;
-            //             return
-            //         }   
-            //     }else if(delta >= delay){
-            //         console.log('jjj')
-            //         fn.call();
-            //         start = new Date().getTime();
-            //     }              
-                
-            // } else{
-            //     console.log('hidden')
-            //     if(flag==0) deltaHidden = current - start;
-            //     flag=1
-            // }
-
-            if(!this.tabInactive) {          
-                let delta = current - start;
-                flag = 0   
-                 // Active
-             
-                if(deltaHidden){    
-                    console.log('hha')  
-                    startHidden = new Date().getTime();  
-                    deltaHidden = current - startHidden + delta;                                
-                    if (deltaHidden >= delay) {
-                        console.log('visi')
-                        fn.call();                        
-                        deltaHidden = undefined;
-                        return
-                    }   
-                }else if(delta >= delay){
-                    console.log('jjj')
-                    fn.call();
-                    start = new Date().getTime();
-                }              
-                
-            } else{
-                console.log('hidden')
-                if(flag==0) deltaHidden = current - start;
-                flag=1
-            }
+            let delta = current - start;   
+  
+            if(delta >= delay){
+                fn.call();
+                start = new Date().getTime();
+            }  
 
         }
         handle.value = requestAnimFrame(loop);
+        this.intervId.push(handle.value)
         return handle;
     }
 
@@ -242,6 +179,7 @@ class NikoSlider{
         }
         return(hidden)
     }
+    
     leftInit(){
         // console.log(6)
         this.slides.forEach(slide=>{
@@ -253,12 +191,6 @@ class NikoSlider{
                     slide.classList.remove('left')
                 }
             }
-            // if(this.slides[curslide]==slide) {          
-            //         slide.style.visibility = "visible"        
-            //         slide.style.transition = transitionTypeLeft
-            //         slide.style.left = "0"
-            //         slide.style.right = "unset"
-            // }
         })
     }
     
