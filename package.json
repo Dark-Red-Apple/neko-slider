@@ -1,0 +1,20 @@
+{
+  "name": "nekoslider",
+  "version": "1.0.0",
+  "description": "\"Left to right slider\"",
+  "main": "slider.html",
+  "scripts": {
+    "test": "\"run\"",
+    "build": "minify src/css/style.css > src/css/style-minified.css"
+  },
+  "keywords": [
+    "Slider",
+    "left_to_right_slider",
+    "javascript"
+  ],
+  "author": "Alma Ziaabadi",
+  "license": "MIT",
+  "devDependencies": {
+    "minify": "^8.0.3"
+  }
+}
