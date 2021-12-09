@@ -1,13 +1,14 @@
-//Author: Alma Ziaabadi
+
+//Author: Alma Z
 
 class NikoSlider{
     curslide = 0
     prevSlide
     // interv
     transitionTime = 1000
-    transitionTypeRight = `right ${this.transitionTime}ms linear`
-    transitionTypeLeft = `left ${this.transitionTime}ms linear`
-    transformQuickType = "right 0.2s linear"
+    transitionTypeRight = `right ${this.transitionTime}ms ease-in-out`
+    transitionTypeLeft = `left ${this.transitionTime}ms ease-in-out`
+    transformQuickType = "right 0.2s ease-in-out"
     loopTime
     intervId = []
     timeOutId =[]
@@ -16,6 +17,7 @@ class NikoSlider{
     slides
     leftNav
     rightNav
+    tabInactive = 0
     
 
     constructor(options){
@@ -23,8 +25,22 @@ class NikoSlider{
         this.initilize()
         this.createNextPrevBut()
         this.slides = document.querySelector('.slider-container').querySelectorAll(`.${options.slideClass}`)
+        console.log('0',this.intervId)
+        window.addEventListener('focus', this.focusListener);
+        window.addEventListener('blur', this.blurListener);  
         this.showSlide() 
        
+    }
+
+    focusListener(){
+        this.showSlide() 
+        this.tabInactive = 0
+        console.log('focux')
+    }
+    blurListener(){
+        this.clearTimeoutInterval() 
+        this.tabInactive = 1
+        console.log('blur')
     }
 
     initilize(){
@@ -84,7 +100,7 @@ class NikoSlider{
             if(this.slides[this.curslide].style.right != 0){
 
             }else{
-                this.clearTimeoutInterval()    
+                this.clearTimeoutInterval()
                 this.leftInit()
                 this.setCurPrevSlidesToLeft()  
                 
@@ -109,22 +125,107 @@ class NikoSlider{
 
     showSlide(){
         const startTime = new Date()
+        // console.log(this.intervId)
         this.clearTimeoutInterval()
+        // this.intervId=[]
+        console.log('1',this.intervId)
+        this.intervId.forEach((idIn)=>cancelAnimationFrame(idIn))
+        console.log('2',this.intervId)
         const hidden = this.checkBrowserHidden()
 
-        let intervId = setInterval(() =>{
-            if(!document[hidden]) {    
-                if(this.slides[this.curslide].style.right == 0){
-                    if((this.loopTime - (new Date() - startTime)%this.loopTime) >= this.loopTime/2 ){                
+        let intervId = this.requestInterval(() =>{
+            // if(!document[hidden]) {    
+                // if(this.slides[this.curslide].style.right == 0){
+                    // if((this.loopTime - (new Date() - startTime)%this.loopTime) >= this.loopTime/2 ){                
                         this.rightInit()
                         this.setCurPrevSlides()        
                         this.goToRight() 
-                    }       
-                }                
-            }     
+                    // }     
+                // }                
+            // }               
+  
         }, this.loopTime);
 
-        this.intervId.push(intervId)
+        this.intervId.push(intervId.value)
+        console.log(this.intervId)
+
+ 
+    }
+
+    requestInterval (fn, delay) {
+        let requestAnimFrame = (function () {
+          return window.requestAnimationFrame || function (callback, element) {
+            window.setTimeout(callback, 1000 / 60);
+          };
+        })(),
+        hidden = this.checkBrowserHidden(),
+        start = new Date().getTime(),
+        handle = {},
+        deltaHidden,
+        flag = 0,
+        startHidden;
+
+        let loop = () => {
+            handle.value = requestAnimFrame(loop);  
+            let current = new Date().getTime();
+
+            // if(!document[hidden]) {          
+            //     let delta = current - start;
+            //     flag = 0   
+            //      // Active
+             
+            //     if(deltaHidden){    
+            //         console.log('hha')  
+            //         startHidden = new Date().getTime();  
+            //         deltaHidden = current - startHidden + delta;                                
+            //         if (deltaHidden >= delay) {
+            //             console.log('visi')
+            //             fn.call();                        
+            //             deltaHidden = undefined;
+            //             return
+            //         }   
+            //     }else if(delta >= delay){
+            //         console.log('jjj')
+            //         fn.call();
+            //         start = new Date().getTime();
+            //     }              
+                
+            // } else{
+            //     console.log('hidden')
+            //     if(flag==0) deltaHidden = current - start;
+            //     flag=1
+            // }
+
+            if(!this.tabInactive) {          
+                let delta = current - start;
+                flag = 0   
+                 // Active
+             
+                if(deltaHidden){    
+                    console.log('hha')  
+                    startHidden = new Date().getTime();  
+                    deltaHidden = current - startHidden + delta;                                
+                    if (deltaHidden >= delay) {
+                        console.log('visi')
+                        fn.call();                        
+                        deltaHidden = undefined;
+                        return
+                    }   
+                }else if(delta >= delay){
+                    console.log('jjj')
+                    fn.call();
+                    start = new Date().getTime();
+                }              
+                
+            } else{
+                console.log('hidden')
+                if(flag==0) deltaHidden = current - start;
+                flag=1
+            }
+
+        }
+        handle.value = requestAnimFrame(loop);
+        return handle;
     }
 
     checkBrowserHidden(){
@@ -226,7 +327,8 @@ class NikoSlider{
     clearTimeoutInterval(){
         // timeOutNavIds.forEach((tiIdItem)=>clearTimeout(tiIdItem))
         // timeOutNavIds = []
-        this.intervId.forEach((intIdItem)=>clearInterval(intIdItem))
+        // console.log(this.intervId)
+        this.intervId.forEach((idIn)=>cancelAnimationFrame(idIn))
         this.intervId = []
         this.timeOutId.forEach((timIdItem)=>clearTimeout(timIdItem))
         this.timeOutId = []
@@ -240,63 +342,4 @@ let niko = new NikoSlider({
     loopTime: 5000
     }
 )
-
-// Found this code on the stackoverflow
-// function IntervalTimer(callback, interval) {
-//     var timerId, startTime, remaining = 0;
-//     var state = 0; //  0 = idle, 1 = running, 2 = paused, 3= resumed
-
-//     this.pause = function () {
-//         if (state != 1) return;
-//         remaining = interval - (new Date() - startTime)%interval;
-//         this.clearTimeoutInterval()
-//         state = 2;
-//         // console.log(remaining)
-//     };
-
-//     this.resume = function () {
-//         if (state != 2) return;
-//         state = 3;
-//         niko.timeOutId.push(window.setTimeout(this.timeoutCallback, remaining));
-//     };
-
-//     this.timeoutCallback = function () {
-//         if (state != 3) return;
-
-//         callback();
-
-//         startTime = new Date();
-//         timerId = window.setInterval(callback, interval);
-//         niko.intervId.push(timerId)
-//         state = 1;
-//     };
-
-//     startTime = new Date();
-//     // console.log(4)
-//     timerId = window.setInterval(callback, interval);
-//     niko.intervId.push(timerId)
-//     state = 1;
-// }
-
-
-// Set the name of the hidden property and the change event for visibility
-
-
-// function handleVisibilityChange() {
-//     // clearTimeoutInterval()
-//     if(document[hidden]) {    
-//         niko.interv.pause();
-//     }
-//     else {
-//         niko.interv.resume();
-//     }
-// }
-
-// // Warn if the browser doesn't support addEventListener or the Page Visibility API
-// if (typeof document.addEventListener === "undefined" || hidden === undefined) {
-//   console.log("This demo requires a browser, such as Google Chrome or Firefox, that supports the Page Visibility API.");
-// } else {
-//   // Handle page visibility change
-// //   document.addEventListener(visibilityChange, handleVisibilityChange, false);
-// }
 

@@ -34,13 +34,13 @@ body{
 }
 .slider-container .slide.active-slide{
     visibility: visible;
-    transition: right 1s linear;
+    transition: right 1s ease-in-out;
     right: 0;
 
 }
 .slider-container .slide.prev-slide.left, .slider-container .slide.prev-slide.right{
     visibility: visible;
-    transition: right 1s linear;
+    transition: right 1s ease-in-out;
 
 }
 .slider-container .slide .to-left{
