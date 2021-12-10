@@ -19,12 +19,9 @@ class NekoSlider{
     auto = true
     direction = 'right'
     slides
-    leftNav
-    rightNav
-    visible = true
-    deltaHidden=undefined
-    current 
-    start 
+    
+
+    
    
 
     constructor(options){
@@ -34,7 +31,7 @@ class NekoSlider{
         this.slides = document.querySelector('.slider-container').querySelectorAll(`.${options.slideClass}`)
         this.showSlide() 
         this.vis()
-       
+        this.hidd = false       
     }
 
     initilize(){
@@ -46,22 +43,28 @@ class NekoSlider{
         else if(!Number.isInteger(loopTime) || loopTime < 500) throw Error('The time duration is not a number more than 500ms')
         else this.loopTime = loopTime
         if(direction) this.direction = direction
-        this.xPosition = slideContainer.getBoundingClientRect().x
         this.slides = document.querySelector('.slider-container').querySelectorAll(`.${slideClass}`)
+        if(this.direction){ 
+            this.Init = this.rightInit()
+            this. setthis.setCurPrevSlides()        
+            this.goToRight() 
+        }
+    
     }
 
     createNextPrevBut(){
-        const slideContainer= this.options.el
-        slideContainer.innerHTML +='<i class="slide-nav right">⪼</i><i class="slide-nav left">⪻</i>'
-        this.leftNav = slideContainer.querySelector('.slide-nav.left')
-        this.rightNav = slideContainer.querySelector('.slide-nav.right')
+        const {el: slideContainer, rightNavIcon, leftNavIcon} = this.options
+        slideContainer.insertAdjacentHTML('beforeend' ,`<i class="slide-nav right">${rightNavIcon}</i>
+        <i class="slide-nav left">${leftNavIcon}</i>`)
+        let leftNav = slideContainer.querySelector('.slide-nav.left')
+        let rightNav = slideContainer.querySelector('.slide-nav.right')
     
-        this.rightNav.addEventListener('click',()=>{
+        rightNav.addEventListener('click',()=>{
             //Clear Interval to prevent conflicts
             this.clearTimeoutInterval()
     
             //This is used if the slider is on the move, since default direction is to right I just make it faster
-            if(this.slides[this.curslide].style.right != 0){
+            if(this.slides[this.curslide].offsetLeft !=0){
     
             }
     
@@ -87,11 +90,11 @@ class NekoSlider{
             this.timeOutId.push(localTimeoutId)         
         })
     
-        this.leftNav.addEventListener('click',()=>{       
+        leftNav.addEventListener('click',()=>{       
     
             // To left while on the move is more complicated since we should reverse the current direction
             // This part is a work in progess
-            if(this.slides[this.curslide].style.right != 0){
+            if(this.slides[this.curslide].offsetLeft !=0){
 
             }else{
                 this.clearTimeoutInterval()
@@ -121,10 +124,16 @@ class NekoSlider{
         this.clearTimeoutInterval()
 
         let intervId = this.requestInterval(() =>{
-         
-            this.rightInit()
-            this.setCurPrevSlides()        
-            this.goToRight() 
+
+            if(this.slides[this.curslide].style.right == 0){
+                if(directio){
+
+                }
+                    this.rightInit()
+                this.setCurPrevSlides()        
+                this.goToRight() 
+            }
+
             
         }, this.loopTime);
 
@@ -139,67 +148,34 @@ class NekoSlider{
           };
         })(),        
         start = new Date().getTime(),
-        handle = {},
-        flag = 0,        
-        startHidden=undefined;
-        console.log(flag)
+        handle = {};
+        // flag = 0        
+        // startHidden=undefined;
+        // let hidd = this.hidd
         // console.log(deltaH,startHidden)
-
-
-
+        // let that =this
         let loop = () => {
+            
             handle.value = requestAnimFrame(loop);  
             this.intervId.push(handle.value)
             let current = new Date().getTime();
             let delta = current - start;
-            if(delta >= delay){
+            if(this.hidd == true && delta >= delay/2){
+                this.hidd =false 
+                fn.call();
+                start = new Date().getTime();
+                console.log('***')
+            }
+            else if(delta >= delay){
                 fn.call();
                 start = new Date().getTime();
            }
-            // visible = this.vis()();
-            // console.log(visible)
-            // this.vis(function(){
-            //      console.log(visible) 
-            //   });
-            // console.log('visible var',this.visible)
-            // if(this.visible) {
-                
-            //     let delta = current - start;
-                
-            //      // Active
-            //     if(this.deltaHidden != undefined){
-            //         flag = 0
-            //         console.log('deltaHidden', this.deltaHidden)
-            //         // console.log('deltaH', deltaH)
-            //         // console.log('deltaHidden', deltaHidden)
-            //         // console.log('hidden to visi')
-            //         if(!startHidden) startHidden = new Date().getTime();
-            //         let deltaH = current - startHidden + this.deltaHidden;
+        }
 
-            //         if (deltaH >= delay) {                        
-            //             fn.call();
-            //             start = new Date().getTime();
-            //             deltaHidden = undefined;
-            //             startHidden = undefined;
-            //             return
-            //         }
-            //     }else if(delta >= delay){
-            //         fn.call();
-            //         start = new Date().getTime();
-            //    }
-                
-            //     } else{
-                   
-            //     if(flag==0) this.deltaHidden = [current , start];
-            //     console.log(this.deltaHidden)
-            //     flag=1 
-            // }
-
-    }
         handle.value = requestAnimFrame(loop);
-        this.intervId.push(handle.value)
+        this.intervId.push(handle.value)           
+        
         return handle;
-    
 
     }
     
@@ -219,13 +195,10 @@ class NekoSlider{
         let handleVisibilityChange =()=> {
           if (document[hidden]) {
             this.clearTimeoutInterval()
-            that.visible = false
-            console.log('*',that.visible)
-          } else {
-            this.showSlide() 
-            that.visible = true
-            console.log(that.visible)
-        }
+            this.hidd = true
+          }else {
+            this.showSlide()
+            }
         }
         
         // Warn if the browser doesn't support addEventListener or the Page Visibility API
@@ -320,12 +293,14 @@ class NekoSlider{
         this.timeOutId = []
     }
 }
-
+//⪻ ⪼
 let niko = new NekoSlider({
     el: document.querySelector('.slider-container'),
     direction: 'left',
     slideClass: 'slide',
-    loopTime: 5000
+    loopTime: 5000,
+    rightNavIcon: '&#10095;',
+    leftNavIcon: '&#10094;'
     }
 )
 
