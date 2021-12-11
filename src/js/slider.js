@@ -1,170 +1,192 @@
-//Author: Alma Z
-// NekoSlider , requirements:
-//el: 'slider container'   
-//direction: 'left or right',
-//slideClass: slide tags class,
-//loopTime: ms
+// NekoSlider
+// Author: Alma Z
+// ***! Copyright !****
+// **Requirements:**
+// el: slider container,   
+// slideClass: slide tags class,
+// **Optional:**
+// direction: 'left or right',
+// loopTime: ms, if not given auto play is false
+// leftNavIcon
+// rightNavIcon
+// transitionTime : in ms from 100 to 10000
+// transitionStyle : linear, ease-out, ease-in, ease-out-in
+
 
 class NekoSlider{
     curslide = 0
     prevSlide
-    // interv
     transitionTime = 1000
-    transitionTypeRight = `right ${this.transitionTime}ms ease-in-out`
-    transitionTypeLeft = `left ${this.transitionTime}ms ease-in-out`
-    transformQuickType = "right 0.2s ease-in-out"
+    transitionStyle = 'ease-in-out'
+    transitionTypeRight 
+    transitionTypeLeft 
+    transformQuickType 
     loopTime
     intervId = []
     timeOutId =[]
     auto = true
     direction = 'right'
     slides
-    
-
-    
-   
+    hid = false // hidden is a keyword
 
     constructor(options){
+        
         this.options = options
         this.initilize()
         this.createNextPrevBut()
-        this.slides = document.querySelector('.slider-container').querySelectorAll(`.${options.slideClass}`)
-        this.showSlide() 
-        this.vis()
-        this.hidd = false       
+        if(this.auto) {
+            this.showSlide() 
+            this.vis()
+        }
+        // this.direction=='right'? this.rightInit() : this.leftInit()
     }
 
     initilize(){
-        let {el: slideContainer, loopTime, direction, slideClass} = this.options
+        let {el: slideContainer, loopTime, direction, slideClass, transitionTime,transitionStyle} = this.options
+        let transitionStyles = ["ease-in", "ease-in-out", "ease-out", "linear"]
+        // let transitionStyles = ["ease-in", "ease-in-out", "ease-out", "linear"]
 
         //Check if options exist
         if(!slideContainer) throw Error('The el does not exist')
         if(!loopTime) this.auto = false
         else if(!Number.isInteger(loopTime) || loopTime < 500) throw Error('The time duration is not a number more than 500ms')
         else this.loopTime = loopTime
-        if(direction) this.direction = direction
-        this.slides = document.querySelector('.slider-container').querySelectorAll(`.${slideClass}`)
-        if(this.direction){ 
-            this.Init = this.rightInit()
-            this. setthis.setCurPrevSlides()        
-            this.goToRight() 
-        }
-    
+        if(direction== 'right' || direction=="left" ) this.direction = direction        
+        else if(direction != undefined) throw Error('The direction is not correct')  
+        if(transitionTime >= 100 &&  transitionTime <= 10000) this.transitionTime = transitionTime        
+        else if(transitionTime != undefined) throw Error('The transitionTime is not correct (ms from 100 to 1000)')  
+        if(transitionStyles.indexOf(transitionStyle) != -1) this.transitionStyle = transitionStyle        
+        else if(transitionStyle != undefined) throw Error('The transitionStyle is not correct') 
+        //assingments
+        this.slides = slideContainer.querySelectorAll(`.${slideClass}`)
+        const [activeSlide,...inactiveSlides] = this.slides
+        inactiveSlides.forEach((el)=>el.classList.add(direction=='right'? 'left':'right'))
+        // activeSlide.classList.add(direction=='right'? 'left':'right')
+        this.transition = `right ${this.transitionTime}ms ${this.transitionStyle}`
+        this.transitionTypeLeft = `left ${this.transitionTime}ms ${this.transitionStyle}`
+        this.transformQuickType = `right 0.2s ${this.transitionStyle}`
+        // direction=='right'? this.prevSlide = 1 : this.prevSlide = this.slides.length -1
+
+        // direction =='right'? this.rightInit() : this.leftInit()
+        // if(direction =='right'){
+        //     this.slides[this.slides.length-1].classList.remove('left')
+        //     this.slides[this.slides.length-1].classList.add('right')
+        // }else{
+        //     this.slides[1].classList.remove('right')
+        //     this.slides[1].classList.add('left')
+        // }
     }
 
     createNextPrevBut(){
-        const {el: slideContainer, rightNavIcon, leftNavIcon} = this.options
+        const {el: slideContainer, rightNavIcon = '⪼', leftNavIcon = '⪻'} = this.options
         slideContainer.insertAdjacentHTML('beforeend' ,`<i class="slide-nav right">${rightNavIcon}</i>
         <i class="slide-nav left">${leftNavIcon}</i>`)
         let leftNav = slideContainer.querySelector('.slide-nav.left')
         let rightNav = slideContainer.querySelector('.slide-nav.right')
     
         rightNav.addEventListener('click',()=>{
-            //Clear Interval to prevent conflicts
-            this.clearTimeoutInterval()
-    
-            //This is used if the slider is on the move, since default direction is to right I just make it faster
-            if(this.slides[this.curslide].offsetLeft !=0){
-    
-            }
     
             //This is used if the slider is not on the move
             // rightInit() Bring the slides in to the right starting position
             // setCurPrevSlides() Set the previous and current slide
             // goToRight(curslide, prevSlide) move to right
-            else{
+            if(this.slides[this.curslide].offsetLeft == 0 ){
+                this.clearTimeoutInterval()
                 this.rightInit()
-                // slides[curslide].addEventListener("transitionend", func)
                 this.setCurPrevSlides()
-                this.goToRight()
+                // setTimeout(()=>this.goToRight()) 
+                requestAnimationFrame(()=>this.goToRight())   
+                  
+                // this.goToRight()
+                //used a timeout to prevent confilicts with transition time, 
+                // also remove all the timeouts stored in timeOutNavIds if one clicks more than once on the nav
+                if(this.auto) {
+                    const localTimeoutId = setTimeout(()=>{
+                        this.timeOutId.forEach((tiIdItem)=>clearTimeout(tiIdItem))
+                        this.showSlide()  
+                    },this.transitionTime)  
+                    this.timeOutId.push(localTimeoutId) 
+                } 
             }
-    
-  
-            //I have made a timeout to prevent confilicts, 
-            // also remove all the timeouts stored in timeOutNavIds if one clicks more than once on the nav
-            const localTimeoutId = setTimeout(()=>{
-                this.timeOutId.forEach((tiIdItem)=>clearTimeout(tiIdItem))
-                this.showSlide()  
-            },this.transitionTime)    
-    
-            this.timeOutId.push(localTimeoutId)         
         })
     
         leftNav.addEventListener('click',()=>{       
     
             // To left while on the move is more complicated since we should reverse the current direction
             // This part is a work in progess
-            if(this.slides[this.curslide].offsetLeft !=0){
-
-            }else{
+           if( this.slides[this.curslide].offsetLeft == 0 ){
                 this.clearTimeoutInterval()
                 this.leftInit()
                 this.setCurPrevSlidesToLeft()  
-                
-                //set a timeout here because put a gap between lefInit and  or transition is trigerred
-                setTimeout(()=>{
-                    this.goToLeft()
-                })            
+                // this.goToLeft()
+                // this is a bug i have to fix
+                // set a timeout or requestAnimFrame here to put a gap between first lefInit and goToLeft style changes, because it goes from -100 directly to 0. Strange. Only the first time.
+                // setTimeout(()=>this.goToLeft())  
+                requestAnimationFrame(()=>this.goToLeft())          
     
                 //after transition is complete run the timer
-                let localTimeoutId = setTimeout(()=>{   
-                    this.timeOutId.forEach((tiIdItem)=>clearTimeout(tiIdItem)) 
-                    this.rightInit()
-                    this.showSlide()                   
-                },this.transitionTime)    
-        
-                this.timeOutId.push(localTimeoutId)
+                if(this.auto) {
+                    let localTimeoutId = setTimeout(()=>{   
+                        this.timeOutId.forEach((tiIdItem)=>clearTimeout(tiIdItem)) 
+                        this.showSlide()                   
+                    },this.transitionTime) 
+                    this.timeOutId.push(localTimeoutId)
+                }   
             }      
-    
         })   
-    
     }
 
     showSlide(){
         this.clearTimeoutInterval()
+        let intervId
+        if(this.direction == 'right'){
+            intervId = this.requestInterval(() =>{
 
-        let intervId = this.requestInterval(() =>{
+                // if(this.slides[this.curslide].style.right == 0){
 
-            if(this.slides[this.curslide].style.right == 0){
-                if(directio){
-
-                }
                     this.rightInit()
-                this.setCurPrevSlides()        
-                this.goToRight() 
-            }
+                    this.setCurPrevSlides()        
+                    this.goToRight() 
+                // }
+    
+            }, this.loopTime);
+        }
+        else{
+            intervId = this.requestInterval(() =>{
+                // if(this.slides[this.curslide].style.right == 0){
 
-            
-        }, this.loopTime);
+                    this.leftInit()
+                    this.setCurPrevSlidesToLeft()        
+                    this.goToLeft() 
+                // }
 
+            }, this.loopTime);
+        }
+ 
         this.intervId.push(intervId.value)
 
     }
 
     requestInterval (fn, delay) {
         let requestAnimFrame = (function () {
-          return window.requestAnimationFrame || function (callback, element) {
+          return window.requestAnimationFrame || function (callback) {
             window.setTimeout(callback, 1000 / 60);
           };
         })(),        
         start = new Date().getTime(),
         handle = {};
-        // flag = 0        
-        // startHidden=undefined;
-        // let hidd = this.hidd
-        // console.log(deltaH,startHidden)
-        // let that =this
         let loop = () => {
             
             handle.value = requestAnimFrame(loop);  
             this.intervId.push(handle.value)
             let current = new Date().getTime();
             let delta = current - start;
-            if(this.hidd == true && delta >= delay/2){
-                this.hidd =false 
+            
+            //since the animFrame is cancled when hidden the second if won't run before this
+            if(this.hid == true && delta >= delay/2){
+                this.hid =false 
                 fn.call();
                 start = new Date().getTime();
-                console.log('***')
             }
             else if(delta >= delay){
                 fn.call();
@@ -176,48 +198,47 @@ class NekoSlider{
         this.intervId.push(handle.value)           
         
         return handle;
-
     }
     
     vis(){
         let hidden, visibilityChange;
         if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support
-          hidden = "hidden";
-          visibilityChange = "visibilitychange";
+            hidden = "hidden";
+            visibilityChange = "visibilitychange";
         } else if (typeof document.msHidden !== "undefined") {
-          hidden = "msHidden";
-          visibilityChange = "msvisibilitychange";
+            hidden = "msHidden";
+            visibilityChange = "msvisibilitychange";
         } else if (typeof document.webkitHidden !== "undefined") {
-          hidden = "webkitHidden";
-          visibilityChange = "webkitvisibilitychange";
+            hidden = "webkitHidden";
+            visibilityChange = "webkitvisibilitychange";
         }
-        let that = this
+
         let handleVisibilityChange =()=> {
-          if (document[hidden]) {
-            this.clearTimeoutInterval()
-            this.hidd = true
-          }else {
-            this.showSlide()
+            if (document[hidden]) {
+                this.clearTimeoutInterval()
+                this.hid = true
+            }else {
+                this.showSlide()    
             }
         }
         
         // Warn if the browser doesn't support addEventListener or the Page Visibility API
         if (typeof document.addEventListener === "undefined" || hidden === undefined) {
             console.log("This demo requires a browser, such as Google Chrome or Firefox, that supports the Page Visibility API.");
-          } else {
+        }else {
             // Handle page visibility change
             document.addEventListener(visibilityChange, handleVisibilityChange, false);
         }
     }
 
     leftInit(){
-        // console.log(6)
         this.slides.forEach(slide=>{
             if(this.slides[this.curslide]!=slide) {            
                 if(!(this.slides[this.curslide].style.right != 0 && this.slides[this.prevSlide] == slide)) {    
-                    slide.classList.remove('active-slide')
-                    slide.classList.remove('prev-slide')
+                    slide.style.transition = "unset"
                     slide.classList.add('right')
+                    slide.classList.remove('active-slide')
+                    slide.classList.remove('prev-slide')                    
                     slide.classList.remove('left')
                 }
             }
@@ -227,59 +248,43 @@ class NekoSlider{
     // to position slide in the right starting position
     rightInit(){
         this.slides.forEach((slide)=>{
-            if(this.slides[this.curslide]!=slide) {            
+            if(this.slides[this.curslide]!=slide) {       
                 if(!(this.slides[this.curslide].style.right != 0  && this.slides[this.prevSlide] == slide)) {    
-                    slide.classList.remove('active-slide')
-                    slide.classList.remove('prev-slide')
+                    slide.style.transition = "unset"
                     slide.classList.add('left')
+                    slide.classList.remove('active-slide')
+                    slide.classList.remove('prev-slide')                    
                     slide.classList.remove('right')
                 }
             }  
         })
     }
-    
-    // Set the previous and current slide in right direction
-    setCurPrevSlides(){
-        this.prevSlide = this.curslide
-        this.curslide++
-        if(this.curslide>this.slides.length-1){
-            this.curslide = 0      
-        } 
-    }
-    
-    // Set the previous and current slide in left direction
-    setCurPrevSlidesToLeft(){
-        this.prevSlide = this.curslide
-        this.curslide--
-        if(this.curslide<0){
-            this.curslide = this.slides.length-1      
-        } 
-    }
-    
+      
     //Go to right, default
     goToRight(){
 
         this.slides[this.curslide].classList.remove('right')
         this.slides[this.curslide].classList.remove('left')
         this.slides[this.curslide].classList.add('active-slide')
+        this.slides[this.curslide].style.transition = this.transition
 
+        this.slides[this.prevSlide].style.transition = this.transition
         this.slides[this.prevSlide].classList.remove('active-slide')
         this.slides[this.prevSlide].classList.add('left')
         this.slides[this.prevSlide].classList.add('prev-slide')
         this.slides[this.prevSlide].classList.add('right')
-        
      
     }
-    
-    //If you want to make this default you have to run leftInit() before showSlide() 
-    // And use a similar setTimeout to positon slides into starting position after every move
+
     goToLeft(){
         
         this.slides[this.curslide].classList.remove('prev-slide')
         this.slides[this.curslide].classList.remove('right')
         this.slides[this.curslide].classList.add('left')
         this.slides[this.curslide].classList.add('active-slide')
+        this.slides[this.curslide].style.transition = this.transition
 
+        this.slides[this.prevSlide].style.transition = this.transition
         this.slides[this.prevSlide].classList.remove('active-slide')
         this.slides[this.prevSlide].classList.add('prev-slide')
         this.slides[this.prevSlide].classList.add('left')
@@ -292,15 +297,44 @@ class NekoSlider{
         this.timeOutId.forEach((timIdItem)=>clearTimeout(timIdItem))
         this.timeOutId = []
     }
+
+    // Set the previous and current slide in right direction
+    setCurPrevSlides(){
+        this.prevSlide = this.curslide
+        this.curslide++
+        if(this.curslide>this.slides.length-1) this.curslide = 0   
+    }
+        
+    // Set the previous and current slide in left direction
+    setCurPrevSlidesToLeft(){
+        this.prevSlide = this.curslide
+        this.curslide--
+        if(this.curslide<0) this.curslide = this.slides.length-1 
+    }
 }
+
 //⪻ ⪼
-let niko = new NekoSlider({
-    el: document.querySelector('.slider-container'),
-    direction: 'left',
-    slideClass: 'slide',
-    loopTime: 5000,
+let neko = new NekoSlider({
+    el: document.querySelector('#slider1'),
+    slideClass: 'slide',      
+    loopTime: 6000,
+    direction: 'right',  
     rightNavIcon: '&#10095;',
-    leftNavIcon: '&#10094;'
+    leftNavIcon: '&#10094;',
+    transitionTime: 1000,
+    transitionStyle:"ease-in-out"
+    }
+)
+//⪻ ⪼
+let neko1 = new NekoSlider({
+    el: document.querySelector('#slider2'),
+    slideClass: 'slide',      
+    loopTime: 6000,
+    direction: 'right',  
+    rightNavIcon: '&#10095;',
+    leftNavIcon: '&#10094;',
+    transitionTime: 1000,
+    transitionStyle:"ease-in-out"
     }
 )
 
