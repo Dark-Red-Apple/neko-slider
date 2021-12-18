@@ -27,9 +27,9 @@ Within the download you'll find the following directories and files, logically g
 NekoSlider/
 ├── src/
 │   ├── css 
-│   │    └── css.css
+│   │   └── css.css
 │   └── js
-│		 └── css.css
+│		 └── js.css
 └── slider.html
 
 ```
