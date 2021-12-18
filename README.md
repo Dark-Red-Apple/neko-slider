@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://getbootstrap.com/">
-    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwS70r6aZEg6-wofSf66x7MU7FiZSEFSOIQA&usqp=CAU" alt="Bootstrap logo" width="200" height="165">
+    <img src="https://github.githubassets.com/images/icons/emoji/unicode/1f63c.png?v8" alt="Bootstrap logo" width="20" height="20">
   </a>
   <p align="center">  
     <a href="https://img.shields.io/apm/l/npm?style=flat-square">
