@@ -38,13 +38,12 @@ class NekoSlider{
             this.showSlide() 
             this.vis()
         }
-        // this.direction=='right'? this.rightInit() : this.leftInit()
+        
     }
 
     initilize(){
         let {el: slideContainer, loopTime, direction, slideClass, transitionTime,transitionStyle} = this.options
         let transitionStyles = ["ease-in", "ease-in-out", "ease-out", "linear"]
-        // let transitionStyles = ["ease-in", "ease-in-out", "ease-out", "linear"]
 
         //Check if options exist
         if(!slideContainer) throw Error('The el does not exist')
@@ -61,20 +60,11 @@ class NekoSlider{
         this.slides = slideContainer.querySelectorAll(`.${slideClass}`)
         const [activeSlide,...inactiveSlides] = this.slides
         inactiveSlides.forEach((el)=>el.classList.add(direction=='right'? 'left':'right'))
-        // activeSlide.classList.add(direction=='right'? 'left':'right')
+        // this.direction=='right'? this.rightInit() : this.leftInit()
         this.transition = `right ${this.transitionTime}ms ${this.transitionStyle}`
         this.transitionTypeLeft = `left ${this.transitionTime}ms ${this.transitionStyle}`
         this.transformQuickType = `right 0.2s ${this.transitionStyle}`
-        // direction=='right'? this.prevSlide = 1 : this.prevSlide = this.slides.length -1
 
-        // direction =='right'? this.rightInit() : this.leftInit()
-        // if(direction =='right'){
-        //     this.slides[this.slides.length-1].classList.remove('left')
-        //     this.slides[this.slides.length-1].classList.add('right')
-        // }else{
-        //     this.slides[1].classList.remove('right')
-        //     this.slides[1].classList.add('left')
-        // }
     }
 
     createNextPrevBut(){
@@ -86,19 +76,18 @@ class NekoSlider{
     
         rightNav.addEventListener('click',()=>{
     
-            //This is used if the slider is not on the move
+            // This is used if the slider is not on the move, when reverse the direction, trouble
             // rightInit() Bring the slides in to the right starting position
             // setCurPrevSlides() Set the previous and current slide
             // goToRight(curslide, prevSlide) move to right
+            // This part is a work in progess
             if(this.slides[this.curslide].offsetLeft == 0 ){
                 this.clearTimeoutInterval()
                 this.rightInit()
                 this.setCurPrevSlides()
-                // setTimeout(()=>this.goToRight()) 
                 requestAnimationFrame(()=>this.goToRight())   
                   
-                // this.goToRight()
-                //used a timeout to prevent confilicts with transition time, 
+                // A timeout to prevent confilicts with transition time, 
                 // also remove all the timeouts stored in timeOutNavIds if one clicks more than once on the nav
                 if(this.auto) {
                     const localTimeoutId = setTimeout(()=>{
@@ -112,19 +101,14 @@ class NekoSlider{
     
         leftNav.addEventListener('click',()=>{       
     
-            // To left while on the move is more complicated since we should reverse the current direction
-            // This part is a work in progess
            if( this.slides[this.curslide].offsetLeft == 0 ){
                 this.clearTimeoutInterval()
                 this.leftInit()
                 this.setCurPrevSlidesToLeft()  
-                // this.goToLeft()
-                // this is a bug i have to fix
+
                 // set a timeout or requestAnimFrame here to put a gap between first lefInit and goToLeft style changes, because it goes from -100 directly to 0. Strange. Only the first time.
-                // setTimeout(()=>this.goToLeft())  
                 requestAnimationFrame(()=>this.goToLeft())          
     
-                //after transition is complete run the timer
                 if(this.auto) {
                     let localTimeoutId = setTimeout(()=>{   
                         this.timeOutId.forEach((tiIdItem)=>clearTimeout(tiIdItem)) 
@@ -142,28 +126,23 @@ class NekoSlider{
         if(this.direction == 'right'){
             intervId = this.requestInterval(() =>{
 
-                // if(this.slides[this.curslide].style.right == 0){
-
                     this.rightInit()
                     this.setCurPrevSlides()        
                     this.goToRight() 
-                // }
     
             }, this.loopTime);
         }
         else{
             intervId = this.requestInterval(() =>{
-                // if(this.slides[this.curslide].style.right == 0){
 
                     this.leftInit()
                     this.setCurPrevSlidesToLeft()        
                     this.goToLeft() 
-                // }
 
             }, this.loopTime);
         }
  
-        this.intervId.push(intervId.value)
+        // this.intervId.push(intervId.value)
 
     }
 
@@ -173,8 +152,8 @@ class NekoSlider{
             window.setTimeout(callback, 1000 / 60);
           };
         })(),        
-        start = new Date().getTime(),
-        handle = {};
+        start = new Date().getTime(), handle = {};
+
         let loop = () => {
             
             handle.value = requestAnimFrame(loop);  
@@ -191,7 +170,7 @@ class NekoSlider{
             else if(delta >= delay){
                 fn.call();
                 start = new Date().getTime();
-           }
+            }
         }
 
         handle.value = requestAnimFrame(loop);
@@ -329,11 +308,11 @@ let neko = new NekoSlider({
 let neko1 = new NekoSlider({
     el: document.querySelector('#slider2'),
     slideClass: 'slide',      
-    loopTime: 6000,
+    loopTime: 4000,
     direction: 'right',  
-    rightNavIcon: '&#10095;',
-    leftNavIcon: '&#10094;',
-    transitionTime: 1000,
+    rightNavIcon: '⪼',
+    leftNavIcon: '⪻',
+    transitionTime: 500,
     transitionStyle:"ease-in-out"
     }
 )
