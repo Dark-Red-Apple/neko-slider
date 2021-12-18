@@ -15,7 +15,7 @@
   <a href="https://github.com/Dark-Red-Apple/Test"><strong>NekeSlider</strong></a>
 </p>
 
-# NekeSlider
+# NekoSlider
 A simple left to right(or right to left slider, optional)
 ## What's included
 
