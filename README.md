@@ -29,7 +29,7 @@ NekoSlider/
 │   ├── css 
 │   │   └── css.css
 │   └── js
-│		 └── js.css
+│       └── js.css
 └── slider.html
 
 ```
