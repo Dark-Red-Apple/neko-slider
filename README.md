@@ -12,7 +12,7 @@
 <p align="center">
   Simple right to left Slider
   <br>
-  <a href="https://github.com/Dark-Red-Apple/Test"><strong>NekoSlider</strong></a>
+  <a href="https://github.com/Dark-Red-Apple/Test" target="_blank"><strong>NekoSlider</strong></a>
 </p>
 
 # NekoSlider
