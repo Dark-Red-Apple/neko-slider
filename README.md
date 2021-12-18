@@ -17,6 +17,7 @@
 
 # NekeSlider
 A simple left to right(or right to left slider, optional)
+<br>
 You can see a demo Here: <a href="https://jsbin.com/nofepajagi/edit?html,css,output">demo</a>
 ## What's included
 
