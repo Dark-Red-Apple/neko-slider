@@ -12,10 +12,10 @@
 <p align="center">
   Simple right to left Slider
   <br>
-  <a href="https://github.com/Dark-Red-Apple/Test"><strong>NekeSlider</strong></a>
+  <a href="https://github.com/Dark-Red-Apple/Test"><strong>NekoSlider</strong></a>
 </p>
 
-# NekeSlider
+# NekoSlider
 A simple left to right(or right to left slider, optional)
 <br>
 You can see a demo Here: <a href="https://jsbin.com/nofepajagi/edit?html,css,output">demo</a>
