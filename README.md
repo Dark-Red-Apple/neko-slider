@@ -18,7 +18,7 @@
 # NekoSlider
 A simple left to right(or right to left slider, optional)
 <br>
-You can see a demo Here: <a href="https://jsbin.com/nofepajagi/edit?html,css,output" target="__blank">demo</a>
+You can see a demo Here: <a href="https://dark-red-apple.github.io/NekoSlider/" target="__blank">demo</a>
 ## What's included
 
 Within the download you'll find the following directories and files, logically grouping common assets and providing both compiled and minified variations. You'll see something like this:
