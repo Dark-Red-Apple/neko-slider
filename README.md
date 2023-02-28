@@ -18,7 +18,7 @@
 # NekoSlider
 A simple left to right(or right to left slider, optional)
 <br>
-You can see a demo Here: <a href="https://dark-red-apple.github.io/NekoSlider/" target="__blank">demo</a>.
+You can see a demo Here: <a href="https://dark-red-apple.github.io/neko-slider/" target="__blank">demo</a>.
 <br>
 The npm link: <a href="https://www.npmjs.com/package/nekoslider" target="__blank">NekoSlider</a>
 ## What's included
