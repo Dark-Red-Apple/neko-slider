@@ -1,6 +1,6 @@
 {
-  "name": "nekoslider",
-  "version": "2.3.1",
+  "name": "@dark-red-apple/nekoslider",
+  "version": "3.0.1",
   "description": "\"Left to right slider\"",
   "main": "dist/index.js",
   "scripts": {
