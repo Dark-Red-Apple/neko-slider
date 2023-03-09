@@ -1,5 +1,5 @@
 {
-  "name": "@dark-red-apple/nekoslider",
+  "name": "@dark_red_apple/nekoslider",
   "version": "3.0.1",
   "description": "\"Left to right slider\"",
   "main": "dist/index.js",
