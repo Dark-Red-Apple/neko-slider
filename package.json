@@ -1,11 +1,12 @@
 {
   "name": "nekoslider",
-  "version": "1.0.0",
+  "version": "1.5.0",
   "description": "\"Left to right slider\"",
-  "main": "slider.html",
+  "main": "dist/index.js",
   "scripts": {
     "test": "\"run\"",
-    "build": "minify src/css/style.css > src/css/style-minified.css"
+    "build": "webpack-cli --mode=production && minify css/style.css > css/style-minified.css",
+    "watch": "webpack-cli --mode= development --watch"
   },
   "keywords": [
     "Slider",
@@ -15,6 +16,18 @@
   "author": "Alma Ziaabadi",
   "license": "MIT",
   "devDependencies": {
-    "minify": "^8.0.3"
+    "minify": "^8.0.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dark-Red-Apple/neko-slider.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Dark-Red-Apple/neko-slider/issues"
+  },
+  "homepage": "https://github.com/Dark-Red-Apple/neko-slider#readme",
+  "dependencies": {
+    "webpack": "^5.76.0",
+    "webpack-cli": "^5.0.1"
   }
 }
