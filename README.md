@@ -12,7 +12,7 @@
 <p align="center">
   Simple right to left Slider
   <br>
-  <a href="https://github.com/Dark-Red-Apple/Test" ><strong>NekoSlider</strong></a>
+  <a href="https://github.com/Dark-Red-Apple/neko-slider" ><strong>NekoSlider</strong></a>
 </p>
 
 # NekoSlider
@@ -76,12 +76,12 @@ const neko = new NekoSlider({
 <p>You can name your single slide class what you want but you need to provide the name<p>
 
 ```
-      <div class="slider-container" id="slider2" style="width: 90%; border-radius: unset; margin-bottom: 30px">
-        <div class="slide"><img src="./media/pic(5).png" onerror="this.onerror=null; this.src=''" alt="" /></div>
-        <div class="slide"><img src="./media/pic(6).jpg" onerror="this.onerror=null; this.src=''" alt="" /></div>
-        <div class="slide"><img src="./media/pic(7).jpg" onerror="this.onerror=null; this.src=''" alt="" /></div>
-        <div class="slide"><img src="./media/pic(8).jpg" onerror="this.onerror=null; this.src=''" alt="" /></div>
-      </div>
+<div class="slider-container" id="slider2" style="width: 90%; border-radius: unset; margin-bottom: 30px">
+  <div class="slide"><img src="./media/pic(5).png" onerror="this.onerror=null; this.src=''" alt="" /></div>
+  <div class="slide"><img src="./media/pic(6).jpg" onerror="this.onerror=null; this.src=''" alt="" /></div>
+  <div class="slide"><img src="./media/pic(7).jpg" onerror="this.onerror=null; this.src=''" alt="" /></div>
+  <div class="slide"><img src="./media/pic(8).jpg" onerror="this.onerror=null; this.src=''" alt="" /></div>
+</div>
 ```
 
 ## What's included
