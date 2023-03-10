@@ -30,14 +30,12 @@ You can install it via npm:
 
 ```
 npm install nekoslider
-
 ```
 
 Import the package:
 
 ```
 import nekoslider from 'nekoslider'
-
 ```
 
 Create an instance of it:
@@ -54,7 +52,6 @@ const neko = new NekoSlider({
   transitionTime: 1000,
   transitionStyle: "ease-in-out",
 })
-
 ```
 
 <h3>Properties:<h3>
@@ -95,7 +92,7 @@ Within the download you'll find the following directories and files, logically g
 NekoSlider/
 ├── src/
 │   └── index.js
-│    └── slider.js
+│   └── slider.js
 ├──css
 │   └── css.css
 └── index.html
