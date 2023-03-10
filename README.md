@@ -94,10 +94,10 @@ Within the download you'll find the following directories and files, logically g
 ```
 NekoSlider/
 ├── src/
-│   ├── css
-│   │   └── css.css
-│   └── js
-│       └── js.js
-└── slider.html
+│   └── index.js
+│    └── slider.js
+├──css
+│   └── css.css
+└── index.html
 
 ```

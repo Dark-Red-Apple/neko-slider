@@ -16,7 +16,6 @@ const neko = new NekoSlider({
 const neko1 = new NekoSlider({
   el: document.querySelector("#slider2"),
   slideClass: "slide",
-  loopTime: 4000,
   direction: "right",
   rightNavIcon: "⪼",
   leftNavIcon: "⪻",
