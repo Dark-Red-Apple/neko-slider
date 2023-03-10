@@ -12,6 +12,8 @@
 // transitionTime : in ms from 100 to 10000
 // transitionStyle : linear, ease-out, ease-in, ease-out-in
 
+import "../css/final.css"
+
 class NekoSlider {
   curslide = 0
   prevSlide
@@ -27,6 +29,10 @@ class NekoSlider {
   direction = "right"
   slides
   hid = false // hidden is a keyword
+  prevClass = "nekoslider__slide__prev-slide"
+  leftClass = "nekoslider__slider-container__left"
+  rightClass = "nekoslider__slider-container__right"
+  activeClass = "nekoslider__slide__active-slide"
 
   constructor(options) {
     this.options = options
@@ -56,7 +62,11 @@ class NekoSlider {
     //assingments
     this.slides = slideContainer.querySelectorAll(`.${slideClass}`)
     const [activeSlide, ...inactiveSlides] = this.slides
-    inactiveSlides.forEach((el) => el.classList.add(direction == "right" ? "left" : "right"))
+    // add the classes
+    inactiveSlides.forEach((el) => el.classList.add(direction == "right" ? "nekoslider__slider-container__left" : "nekoslider__slider-container__right"))
+    this.slides.forEach((el) => el.classList.add("nekoslider__slide"))
+    activeSlide.classList.add("nekoslider__slide__active-slide")
+    slideContainer.classList.add("nekoslider__slider-container")
     // this.direction=='right'? this.rightInit() : this.leftInit()
     this.transition = `right ${this.transitionTime}ms ${this.transitionStyle}`
     this.transitionTypeLeft = `left ${this.transitionTime}ms ${this.transitionStyle}`
@@ -67,11 +77,11 @@ class NekoSlider {
     const { el: slideContainer, rightNavIcon = "⪼", leftNavIcon = "⪻" } = this.options
     slideContainer.insertAdjacentHTML(
       "beforeend",
-      `<i class="slide-nav right">${rightNavIcon}</i>
-        <i class="slide-nav left">${leftNavIcon}</i>`
+      `<i class="nekoslider__slider-container__nav nekoslider__slider-container__nav__right">${rightNavIcon}</i>
+        <i class="nekoslider__slider-container__nav nekoslider__slider-container__nav__left">${leftNavIcon}</i>`
     )
-    let leftNav = slideContainer.querySelector(".slide-nav.left")
-    let rightNav = slideContainer.querySelector(".slide-nav.right")
+    let leftNav = slideContainer.querySelector(".nekoslider__slider-container__nav__left")
+    let rightNav = slideContainer.querySelector(".nekoslider__slider-container__nav__right")
 
     rightNav.addEventListener("click", () => {
       // This is used if the slider is not on the move, when reverse the direction, trouble
@@ -209,10 +219,10 @@ class NekoSlider {
       if (this.slides[this.curslide] != slide) {
         if (!(this.slides[this.curslide].style.right != 0 && this.slides[this.prevSlide] == slide)) {
           slide.style.transition = "unset"
-          slide.classList.add("right")
-          slide.classList.remove("active-slide")
-          slide.classList.remove("prev-slide")
-          slide.classList.remove("left")
+          slide.classList.add(this.rightClass)
+          slide.classList.remove(this.activeClass)
+          slide.classList.remove(this.prevClass)
+          slide.classList.remove(this.leftClass)
         }
       }
     })
@@ -224,10 +234,10 @@ class NekoSlider {
       if (this.slides[this.curslide] != slide) {
         if (!(this.slides[this.curslide].style.right != 0 && this.slides[this.prevSlide] == slide)) {
           slide.style.transition = "unset"
-          slide.classList.add("left")
-          slide.classList.remove("active-slide")
-          slide.classList.remove("prev-slide")
-          slide.classList.remove("right")
+          slide.classList.add(this.leftClass)
+          slide.classList.remove(this.activeClass)
+          slide.classList.remove(this.prevClass)
+          slide.classList.remove(this.rightClass)
         }
       }
     })
@@ -235,29 +245,29 @@ class NekoSlider {
 
   //Go to right, default
   goToRight() {
-    this.slides[this.curslide].classList.remove("right")
-    this.slides[this.curslide].classList.remove("left")
-    this.slides[this.curslide].classList.add("active-slide")
+    this.slides[this.curslide].classList.remove(this.rightClass)
+    this.slides[this.curslide].classList.remove(this.leftClass)
+    this.slides[this.curslide].classList.add(this.activeClass)
     this.slides[this.curslide].style.transition = this.transition
 
     this.slides[this.prevSlide].style.transition = this.transition
-    this.slides[this.prevSlide].classList.remove("active-slide")
-    this.slides[this.prevSlide].classList.add("left")
-    this.slides[this.prevSlide].classList.add("prev-slide")
-    this.slides[this.prevSlide].classList.add("right")
+    this.slides[this.prevSlide].classList.remove(this.activeClass)
+    this.slides[this.prevSlide].classList.add(this.leftClass)
+    this.slides[this.prevSlide].classList.add(this.prevClass)
+    this.slides[this.prevSlide].classList.add(this.rightClass)
   }
 
   goToLeft() {
-    this.slides[this.curslide].classList.remove("prev-slide")
-    this.slides[this.curslide].classList.remove("right")
-    this.slides[this.curslide].classList.add("left")
-    this.slides[this.curslide].classList.add("active-slide")
+    this.slides[this.curslide].classList.remove(this.prevClass)
+    this.slides[this.curslide].classList.remove(this.rightClass)
+    this.slides[this.curslide].classList.add(this.leftClass)
+    this.slides[this.curslide].classList.add(this.activeClass)
     this.slides[this.curslide].style.transition = this.transition
 
     this.slides[this.prevSlide].style.transition = this.transition
-    this.slides[this.prevSlide].classList.remove("active-slide")
-    this.slides[this.prevSlide].classList.add("prev-slide")
-    this.slides[this.prevSlide].classList.add("left")
+    this.slides[this.prevSlide].classList.remove(this.activeClass)
+    this.slides[this.prevSlide].classList.add(this.prevClass)
+    this.slides[this.prevSlide].classList.add(this.leftClass)
   }
 
   clearTimeoutInterval() {

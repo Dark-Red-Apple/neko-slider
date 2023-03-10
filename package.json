@@ -1,5 +1,5 @@
 {
-  "name": "@dark_red_apple/nekoslider",
+  "name": "nekoslider",
   "version": "3.0.1",
   "description": "\"Left to right slider\"",
   "main": "dist/index.js",
@@ -27,6 +27,8 @@
   },
   "homepage": "https://github.com/Dark-Red-Apple/neko-slider#readme",
   "dependencies": {
+    "css-loader": "^6.7.3",
+    "style-loader": "^3.3.1",
     "webpack": "^5.76.0",
     "webpack-cli": "^5.0.1"
   }
