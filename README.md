@@ -35,7 +35,7 @@ npm install nekoslider
 Import the package:
 
 ```
-import nekoslider from 'nekoslider'
+import NekoSlider from 'nekoslider'
 ```
 
 Create an instance of it:
